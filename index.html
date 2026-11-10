@@ -77,6 +77,7 @@ input[type=file]{font:400 13px var(--body);color:var(--muted);width:100%}
 input[type=color]{width:100%;height:40px;padding:3px;background:var(--bg);border:1px solid var(--line);border-radius:var(--r)}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(88px,1fr));gap:10px}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
+.histBar{display:flex;gap:8px;padding:12px 2px 4px;flex-wrap:wrap}.histBar .chip:disabled{opacity:.4;cursor:default}#resetBtn{margin-left:auto}
 .chip{font:500 14px var(--body);padding:7px 12px;min-height:36px;border:1px solid var(--line);border-radius:999px;background:var(--bg);color:var(--fg);cursor:pointer}
 .chip[aria-pressed=true]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
 .chip:hover{border-color:var(--muted)}
@@ -114,6 +115,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 <p class="fbNote" id="fbNote"></p><div class="newsFoot"><button type="button" class="go" id="fbSend">Send feedback</button></div></div></div><div class="news" id="news" hidden><div class="newsCard" role="dialog" aria-modal="true" aria-labelledby="newsTitle" tabindex="-1"><div class="newsTop"><span class="newsVer" id="newsVer"></span><button type="button" class="newsX" id="newsX" aria-label="Close">×</button></div><h2 id="newsTitle">What's new in Clicky Frames</h2><p class="newsDate" id="newsDate"></p><div id="newsBody"></div><div class="newsFoot"><button type="button" class="go" id="newsOk">Start designing</button></div></div></div>
 <div class="app">
 <form class="panel" id="form" autocomplete="off">
+<div class="histBar"><button type="button" class="chip" id="undoBtn" title="Undo (Ctrl or ⌘ + Z)" disabled>↶ Undo</button><button type="button" class="chip" id="redoBtn" title="Redo (Ctrl or ⌘ + Shift + Z)" disabled>↷ Redo</button><button type="button" class="chip" id="resetBtn" title="Put every setting back to the start">Reset all</button></div>
 <details open><summary><span class="n">1</span><b>Photo size</b><em id="sSize"></em></summary><div class="body">
  <label class="f">Add your photo to preview it<input id="img" type="file" accept="image/*"></label>
  <div class="chips" id="sizes"></div>
@@ -1362,6 +1364,9 @@ const SWATCH=[['Black','#1E1E20'],['White','#F4F4F0'],['Gray','#9C9C98'],['Oak',
 const TIP_URL='https://www.buymeacoffee.com/boroughbolt';
 /* Release notes: add a new entry at the top for every update. The newest one shows once to each visitor. */
 const RELEASES=[
+ {v:'1.7',date:'November 2026',title:"What's new in Clicky Frames",
+  added:['Undo, Redo and Reset all, at the top of the settings. Undo steps back through every change you made, Redo brings it back, and Reset all puts everything back to the start. Changed your mind about a reset? Just hit Undo. Ctrl or ⌘ + Z works too.'],
+  fixed:[]},
  {v:'1.6',date:'November 2026',title:"What's new in Clicky Frames",
   added:['Clear cover helper. Pick a plexiglass thickness under Photo size and the site tells you exactly what to buy: the cut size, the thickness, and whether you can get it precut. It also gives you a search link and simple cutting tips, and makes room in the frame for it.','Shaped frames (round, oval, arch, wavy, heart and more) get an actual-size cutting template at the end of the guide, so you can trace the plexiglass and cut it to shape.'],
   fixed:['Keyholes now work on every shape and size. Thin frames, including 4x6, get a smaller keyhole made for small picture nails. Hexagons with a short top edge hang from two keyholes on the slanted edges beside it, with slots that point straight up so the frame hangs level.','Tall, narrow hexagons (like 4x6) no longer have corner joints that bump into each other. Their top and bottom edges now stay wide enough for two joints.']},
@@ -1404,6 +1409,8 @@ const RELEASES=[
 const APP_VERSION=RELEASES[0].v;
 const KEY='clicky-public-v3';
 const st={shape:'rect',wmm:203.2,hmm:254,unit:'in',art:1,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'walnut',grain:'along',grainDepth:'1',grainDetail:'1',faceText:'',cover:'none',shapeSeed:1,waveStyle:'classic',waveAmt:'0.5',cornerR:'0',hang:'top',stand:'none',backStyle:'eco',bed:'256x256',bedW:256,bedD:256,backer:true,mat:0,backText:'',fit:'0.1',slug:'',ver:1,cFrame:'#7A5230',cBacker:'#7A5230',cMat:'#F4F4F0'};
+const DEFAULTS=JSON.stringify(st);
+const H={past:[],future:[],cur:null,t:0};
 try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
 if(st.texture==='wood')st.texture='oak';if(!FrameEngine.TEXTURES[st.texture])st.texture='smooth';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
@@ -1434,6 +1441,10 @@ function drawThumbs(){try{const W=Math.max(14,+st.faceW||25),D=Math.max(.5,+st.r
 function queueThumbs(){clearTimeout(thumbT);thumbT=setTimeout(drawThumbs,220)}
 const rndSeed=()=>2+Math.floor(Math.random()*99990);
 $('cover').addEventListener('change',()=>{const t=+st.cover||0;if(t>0){st.art=+(t+.4).toFixed(1);$('art').value=st.art}plexCard();go()});
+$('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('resetBtn').onclick=resetAll;
+document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;const k=e.key.toLowerCase();const tg=e.target;if(tg&&(tg.tagName==='TEXTAREA'||(tg.tagName==='INPUT'&&/^(text|search|email)$/.test(tg.type))))return;
+ if(k==='z'&&!e.shiftKey){e.preventDefault();undo()}else if((k==='z'&&e.shiftKey)||k==='y'){e.preventDefault();redo()}});
+H.cur=JSON.stringify(st);setTimeout(histBtns,0);
 $('shapeShuffle').onclick=()=>{st.shapeSeed=rndSeed();if(st.shape==='wavy')st.waveStyle='random';sync();go()};
 const WSTY=[{k:'even',label:'Even all around'},{k:'classic',label:'Classic'},{k:'random',label:'Random'}];
 chips($('waveStyles'),WSTY,l=>{st.waveStyle=l.k;if(l.k==='random'&&(+st.shapeSeed||1)===1)st.shapeSeed=rndSeed();sync();go()});
@@ -1457,12 +1468,20 @@ function plexCard(){const el=$('plexCard');if(!el)return;const P=plexPlan(st);co
  if(!P.exact)h+=`<ul><li>Leave the protective film on while you cut.</li>${P.shaped?'<li>Trace the template with a marker, then cut just outside the line and sand to it.</li>':''}<li>Straight cuts: score the line 6 to 8 times with a utility knife along a ruler, then snap it over the edge of a table.</li><li>Peel the film off both sides before it goes in the frame.</li></ul>`;
  else h+=`<ul><li>Peel the film off both sides before it goes in the frame.</li></ul>`;
  el.innerHTML=h}
+/* undo, redo and reset all: every change is remembered (quick slider drags count as one step) */
+function histBtns(){const u=$('undoBtn'),r=$('redoBtn');if(u)u.disabled=!H.past.length&&!H.t;if(r)r.disabled=!H.future.length;const z=$('resetBtn');if(z)z.disabled=JSON.stringify(st)===DEFAULTS}
+function histCommit(){clearTimeout(H.t);H.t=0;const s=JSON.stringify(st);if(H.cur!==null&&s!==H.cur){H.past.push(H.cur);if(H.past.length>150)H.past.shift();H.future=[]}H.cur=s;histBtns()}
+function histTouch(){if(H.cur===null)H.cur=JSON.stringify(st);clearTimeout(H.t);H.t=setTimeout(histCommit,600);histBtns()}
+function histApply(s){Object.keys(st).forEach(k=>delete st[k]);Object.assign(st,JSON.parse(s));H.cur=s;sync();save();clearTimeout(tmr);tmr=setTimeout(()=>{seq++;const c=cfg(true);if(busy)pending=c;else run(c)},60);try{queueThumbs()}catch(e){}histBtns()}
+function undo(){if(H.t)histCommit();if(!H.past.length)return;H.future.push(H.cur);histApply(H.past.pop())}
+function redo(){if(H.t)histCommit();if(!H.future.length)return;H.past.push(H.cur);histApply(H.future.pop())}
+function resetAll(){if(H.t)histCommit();const d=JSON.parse(DEFAULTS),s=JSON.stringify(Object.assign({},d));if(s===H.cur)return;H.past.push(H.cur);H.future=[];histApply(s)}
 function sync(){plexCard();{const show=(id,on)=>{const e=$(id);e.hidden=!on;e.style.display=on?'flex':'none'};const wv=st.shape==='wavy',bl=st.shape==='blob',rd=['rect','hex','arch'].includes(st.shape);
  show('shuffleBox',bl||(wv&&st.waveStyle==='random'));show('waveBox',wv||bl);$('waveStyles').style.display=wv?'flex':'none';[...$('waveStyles').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===st.waveStyle));
  $('waveAmtL').textContent=wv?'Wave depth':'Curviness';$('waveNote').textContent=wv?'Deeper waves come out wider, so the frame can follow every curve.':'Low is a soft pebble, high is a bold blob.';
  $('waveAmt').value=st.waveAmt;$('waveAmtV').textContent=Math.round(+st.waveAmt*100)+'%';
  show('roundBox',rd);const cm=cornerMax();$('cornerR').max=cm;if(+st.cornerR>cm)st.cornerR=String(cm);$('cornerR').value=st.cornerR;$('cornerRV').textContent=+st.cornerR?(st.unit==='in'?(+st.cornerR/25.4).toFixed(2)+' in':st.cornerR+' mm'):'Square'}{const cv=['circle','oval','arch','wavy','blob','heart'].includes(st.shape),o=$('build').options;o[0].textContent=cv?'Curved pieces join with locks':'Bars click into each other';o[1].textContent=cv?'Curved pieces join with locks':'Bars with corner locks';o[0].hidden=cv}$('w').value=fmt(st.wmm);$('h').value=fmt(st.hmm);document.querySelectorAll('.unit').forEach(e=>e.textContent=st.unit);$('unit').textContent=st.unit==='in'?'Use mm':'Use inches';
- ['art','build','orient','faceW','depth','lip','relief','reliefDepth','texture','grainDepth','grainDetail','faceText','backText','hang','stand','backStyle','bed','bedW','bedD','mat','fit','cFrame','cBacker','cMat'].forEach(k=>$(k).value=st[k]);$('backer').checked=st.backer;
+ ['art','cover','build','orient','faceW','depth','lip','relief','reliefDepth','texture','grainDepth','grainDetail','faceText','backText','hang','stand','backStyle','bed','bedW','bedD','mat','fit','cFrame','cBacker','cMat'].forEach(k=>$(k).value=st[k]);$('backer').checked=st.backer;
  const pr=(el,f)=>[...el.children].forEach(b=>b.setAttribute('aria-pressed',f(b.dataset.k)));
  pr($('sizes'),k=>{const s=SIZES.find(x=>x[0]===k);return Math.abs(s[1]*IN-st.wmm)<.5&&Math.abs(s[2]*IN-st.hmm)<.5});
  pr($('shapes'),k=>k===st.shape);pr($('sizesEdge'),k=>{const e=EDGES.find(x=>x[0]===k);return e[1]===st.faceW&&e[2]===st.depth&&e[3]===st.lip});
@@ -1487,7 +1506,7 @@ function startLocal(){let MM=null;const ready=Module({wasmBinary:Uint8Array.from
  if(lastMsg)W.postMessage(lastMsg)}
 try{const url=URL.createObjectURL(new Blob([$('coreSrc').textContent,'\n',$('workerSrc').textContent],{type:'text/javascript'}));W=new Worker(url);W.onerror=()=>{W=null;busy=false;if(resolver){resolver.rej(new Error('Your browser ran out of memory making the full-detail files. Try a smaller size, Smooth face, or Standard grain detail, or use Chrome on a computer.'));resolver=null}startLocal()};W.onmessage=onMsg}catch(e){W=null;startLocal()}
 function run(c){busy=true;$('status').textContent='Building…';lastMsg={id:seq,cfg:c};W.postMessage(lastMsg)}
-let tmr;function go(){save();clearTimeout(tmr);tmr=setTimeout(()=>{seq++;const c=cfg(true);if(busy)pending=c;else run(c)},160)}
+let tmr;function go(){save();histTouch();clearTimeout(tmr);tmr=setTimeout(()=>{seq++;const c=cfg(true);if(busy)pending=c;else run(c)},160)}
 const fullBuild=()=>new Promise((res,rej)=>{resolver={res,rej};W.postMessage({id:-1,final:true,cfg:cfg(false)})});
 function showWarn(a){const el=$('warn');el.innerHTML='';a.forEach(t=>{const d=document.createElement('div');d.textContent=t;el.appendChild(d)})}
 /* three */
