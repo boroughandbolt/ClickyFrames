@@ -71,6 +71,8 @@ input[type=range]{width:100%;accent-color:var(--accent);min-height:28px;margin:0
 .plexCard h4{margin:0;font:600 12px/1 var(--body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .plexCard .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px}.plexCard .kv span{color:var(--muted)}.plexCard .kv b{font-weight:600}
 .plexCard p{margin:0}.plexCard a{color:var(--accent);font-weight:600}.plexCard ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font:500 14px var(--body);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:60;max-width:calc(100vw - 32px);text-align:center}
+.toast.on{opacity:1;transform:translate(-50%,0)}
 label.f{display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);min-width:0}
 input[type=number],input[type=text],select{font:400 15px var(--body);color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;width:100%;min-height:40px}
 input[type=file]{font:400 13px var(--body);color:var(--muted);width:100%}
@@ -107,12 +109,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 .alert{padding:14px;margin:12px;border:1px solid var(--err);border-radius:var(--r);color:var(--err);background:var(--bg)}
 @media (max-width:820px){html,body{height:auto}body{display:block}body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--view)}.app{display:flex;flex-direction:column}.stage{display:contents}.vw{order:0;position:sticky;top:env(safe-area-inset-top,0px);z-index:6;flex:none;height:42vh;min-height:230px;background:var(--view);border-bottom:1px solid var(--line)}#view{height:100%;flex:1}.panel{order:1;border:0;overflow:visible;padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 24px}.warn{order:2}.foot{order:3;position:sticky;bottom:0;z-index:6;grid-template-columns:1fr;padding-left:max(16px,env(safe-area-inset-left,0px));padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}.facts{display:none}.go{width:100%}header.top{grid-template-columns:1fr;justify-items:center;gap:10px}.brand{order:-1}.hl:not(:has(a:not([hidden]))){display:none}.hr{justify-content:center}.tabs{top:8px;left:8px;right:8px}.status{left:8px;bottom:8px}}
 </style>
-<header class="top"><div class="hl"><a class="tip" id="tip" href="#" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z" fill="#fff" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="#000" stroke-width="1.6"/><path d="M8.5 3.5c-.6.9.6 1.6 0 2.5M11.5 3.5c-.6.9.6 1.6 0 2.5" fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round"/></svg><span>Buy me a coffee</span></a></div><div class="brand"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 13V3h10v5H8v5z" fill="var(--accent)"/><path d="M29 19v10H19v-5h5v-5z" fill="var(--fg)"/><path d="M19 3h10v10h-5V8h-5z" fill="var(--fg)"/><path d="M13 29H3V19h5v5h5z" fill="var(--accent)"/></svg><h1>Clicky <span>Frames</span></h1></div><div class="hr"><button type="button" class="ver fbBtn" id="fbBtn" aria-haspopup="dialog" aria-label="Feedback"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span class="fbT">Feedback</span></button><button type="button" class="ver" id="verBtn" aria-haspopup="dialog">v<span id="verNum"></span></button><a class="credit" href="https://boroughandbolt.com" target="_blank" rel="noopener">Made by Borough &amp; Bolt <span aria-hidden="true">↗</span></a></div></header>
+<header class="top"><div class="hl"><a class="tip" id="tip" href="#" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h11v6a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5z" fill="#fff" stroke="#000" stroke-width="1.6" stroke-linejoin="round"/><path d="M16 9.5h1.5a2.5 2.5 0 0 1 0 5H16" fill="none" stroke="#000" stroke-width="1.6"/><path d="M8.5 3.5c-.6.9.6 1.6 0 2.5M11.5 3.5c-.6.9.6 1.6 0 2.5" fill="none" stroke="#000" stroke-width="1.3" stroke-linecap="round"/></svg><span>Buy me a coffee</span></a></div><div class="brand"><svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 13V3h10v5H8v5z" fill="var(--accent)"/><path d="M29 19v10H19v-5h5v-5z" fill="var(--fg)"/><path d="M19 3h10v10h-5V8h-5z" fill="var(--fg)"/><path d="M13 29H3V19h5v5h5z" fill="var(--accent)"/></svg><h1>Clicky <span>Frames</span></h1></div><div class="hr"><button type="button" class="ver fbBtn" id="shareBtn" aria-label="Share this design"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5M5 13v6h14v-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="fbT">Share</span></button><button type="button" class="ver fbBtn" id="fbBtn" aria-haspopup="dialog" aria-label="Feedback"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span class="fbT">Feedback</span></button><button type="button" class="ver" id="verBtn" aria-haspopup="dialog">v<span id="verNum"></span></button><a class="credit" href="https://boroughandbolt.com" target="_blank" rel="noopener">Made by Borough &amp; Bolt <span aria-hidden="true">↗</span></a></div></header>
 <div class="news" id="fb" hidden><div class="newsCard fbCard" role="dialog" aria-modal="true" aria-labelledby="fbTitle" tabindex="-1"><div class="newsTop"><span class="newsVer">Feedback</span><button type="button" class="newsX" id="fbX" aria-label="Close">×</button></div><h2 id="fbTitle">Tell us what you think</h2><p class="newsDate">Got an idea for a new feature, or found something broken? We read every message.</p>
 <div class="fbKind" role="radiogroup" aria-label="Type of feedback"><button type="button" role="radio" aria-checked="true" data-k="idea" class="on">💡 Feature idea</button><button type="button" role="radio" aria-checked="false" data-k="bug">🐞 Report a bug</button></div>
 <label class="fbL" for="fbMsg" id="fbLbl">What would you like to see?</label><textarea id="fbMsg" rows="5" maxlength="1200" placeholder="Describe your idea…"></textarea>
 <label class="fbChk"><input type="checkbox" id="fbInc"> Include my current frame settings and browser (helps us find bugs)</label>
 <p class="fbNote" id="fbNote"></p><div class="newsFoot"><button type="button" class="go" id="fbSend">Send feedback</button></div></div></div><div class="news" id="news" hidden><div class="newsCard" role="dialog" aria-modal="true" aria-labelledby="newsTitle" tabindex="-1"><div class="newsTop"><span class="newsVer" id="newsVer"></span><button type="button" class="newsX" id="newsX" aria-label="Close">×</button></div><h2 id="newsTitle">What's new in Clicky Frames</h2><p class="newsDate" id="newsDate"></p><div id="newsBody"></div><div class="newsFoot"><button type="button" class="go" id="newsOk">Start designing</button></div></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="app">
 <form class="panel" id="form" autocomplete="off">
 <div class="histBar"><button type="button" class="chip" id="undoBtn" title="Undo (Ctrl or ⌘ + Z)" disabled>↶ Undo</button><button type="button" class="chip" id="redoBtn" title="Redo (Ctrl or ⌘ + Shift + Z)" disabled>↷ Redo</button><button type="button" class="chip" id="resetBtn" title="Put every setting back to the start">Reset all</button></div>
@@ -152,6 +155,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
  <label class="f">Face text (engraved on the bottom edge)<input id="faceText" type="text" maxlength="30" placeholder="Optional. Works on Flat and Smooth."></label>
  <div class="row"><label class="f">Frame color<input id="cFrame" type="color"></label></div>
  <div class="chips" id="swatches"></div>
+ <label class="check"><input id="twoTone" type="checkbox">Two-tone front (needs an AMS or a filament swap)</label>
+ <div class="sub" id="accentBox" style="display:none"><div class="row"><label class="f">Front color<input id="cAccent" type="color"></label></div><div class="chips" id="accentSwatches"></div>
+  <p class="note">The front 1 mm prints in this color, then the printer switches to your frame color. Works with Smooth faces and the Flat or Bevel edge.</p></div>
 </div></details>
 <details><summary><span class="n">5</span><b>Back and hanging</b><em id="sBack"></em></summary><div class="body">
  <label class="f">Hanging<select id="hang"><option value="top">Keyhole on the top edge</option><option value="all">Keyholes on every edge</option><option value="strips">Command strip pads</option><option value="none">None</option></select></label>
@@ -163,6 +169,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,su
 </div></details>
 <details><summary><span class="n">6</span><b>Printer</b><em id="sFit"></em></summary><div class="body">
  <label class="f">Printer bed size<select id="bed"><option value="180x180">180 × 180 mm (small)</option><option value="220x220">220 × 220 mm</option><option value="250x210">250 × 210 mm</option><option value="256x256">256 × 256 mm</option><option value="300x300">300 × 300 mm</option><option value="350x350">350 × 350 mm</option><option value="custom">Custom size</option></select></label>
+ <label class="f">Filament price, $ per kg<input id="filCost" type="number" min="0" max="200" step="0.5" inputmode="decimal"></label>
  <div class="row" id="bedCustom" hidden><label class="f">Bed width, mm<input id="bedW" type="number" min="150" max="600" step="1"></label><label class="f">Bed depth, mm<input id="bedD" type="number" min="150" max="600" step="1"></label></div>
  <p class="note">Check your printer's bed size in its manual or slicer. Big frames split into more pieces on smaller beds. All the plates come in one 3MF that opens in Bambu Studio with every plate ready. Pick your own printer and settings there. Other slicers can use the STL files. Print the fit-test file first to check the corners click.</p>
 </div></details>
@@ -319,7 +326,7 @@ function softShape(shape,w,h,N,opt){const rmin=opt.rmin||28,hw=w/2,hh=h/2,M0=120
  return{pts:P,poly:false,soft:true}}
 const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]],len=a=>Math.hypot(a[0],a[1]),nrm=a=>{const l=len(a)||1;return[a[0]/l,a[1]/l]},dot=(a,b)=>a[0]*b[0]+a[1]*b[1];
 
-function defaults(){return{shape:'rect',artW:203.2,artH:254,art:1.0,glass:false,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'smooth',grain:'along',faceText:'',mat:0,backer:true,hang:'top',stand:'none',backStyle:'eco',bedW:256,bedD:256,fit:.1,backText:'',skirt:3,shapeSeed:1,waveStyle:'classic',waveAmt:.5,cornerR:0,printer:'P1S',colors:{frame:'#23282B',mat:'#F4F4F0',backer:'#23282B'}}}
+function defaults(){return{shape:'rect',artW:203.2,artH:254,art:1.0,glass:false,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'smooth',grain:'along',faceText:'',mat:0,backer:true,hang:'top',stand:'none',backStyle:'eco',bedW:256,bedD:256,fit:.1,backText:'',skirt:3,twoTone:false,shapeSeed:1,waveStyle:'classic',waveAmt:.5,cornerR:0,printer:'P1S',colors:{frame:'#23282B',mat:'#F4F4F0',backer:'#23282B'}}}
 
 function build(M,cfg){
  const c=Object.assign(defaults(),cfg),warn=[],bin=[];
@@ -343,7 +350,10 @@ function build(M,cfg){
  const pd=Math.min(3.8,Math.max(1.6,R+T-r*maxH-amp-1.4));
  const rW=c.artW+2*c.mat+.8,rH=c.artH+2*c.mat+.8;
  if(c.build!=='one'&&onePiece)warn.push('Curved shapes print as one piece.');
- const face=c.orient==='face'?true:c.orient==='edge'?false:(onePiece||(tex.a===0&&['flat','bevel'].includes(c.relief)));
+ /* two-tone: the front skin prints in a second filament, which needs the frame to print face down */
+ const toneOK=onePiece||(tex.a===0&&['flat','bevel','reverse'].includes(c.relief)),tone=!!c.twoTone&&toneOK,toneT=1;
+ if(c.twoTone&&!toneOK)warn.push('Two-tone needs a Smooth face with the Flat or Bevel edge, so the front can print face down. Switch to one of those to use it.');
+ const face=tone?true:c.orient==='face'?true:c.orient==='edge'?false:(onePiece||(tex.a===0&&['flat','bevel'].includes(c.relief)));
  if(onePiece&&!(c.relief==='flat'||c.relief==='bevel'||c.relief==='reverse'))warn.push('One-piece frames print face down, so curved reliefs will show layer steps. Flat or Bevel looks cleanest.');
  const curveN=tex.a&&!['rect','hex'].includes(c.shape)?Math.min(1800,Math.max(180,Math.round(2.6*(rW+rH+2*c.faceW)/(fineDetail?(c.draft?.55:.34):fineGrain?(c.draft?.8:.45):(c.draft?1:.7))))):undefined;
  const base=shapePath(c.shape,rW,rH,curveN,{CS:M.CrossSection,rmin:(c.faceW-c.lip)*1.35+2,seed:c.shapeSeed,style:c.waveStyle,amt:c.waveAmt});
@@ -716,10 +726,10 @@ function build(M,cfg){
   fit.push({id:'fitt',name:'Fit test button',kind:'button',color:'frame',man:btnM,print:rot.id});
  }
  /* extract meshes */
- const finish=p=>{p.mesh=meshOf(p.man);if(p.sup&&!p.sup.isEmpty())p.supMesh=meshOf(p.sup);p.vol=p.man.volume();const bx=p.man.boundingBox();p.bbox=bx};
+ const finish=p=>{p.mesh=meshOf(p.man);if(tone&&p.kind==='bar'&&p.print===rot.flip){const zt=p.man.boundingBox().max[2]-toneT,fm=p.man.trimByPlane([0,0,1],zt),bm=p.man.trimByPlane([0,0,-1],-zt);if(!fm.isEmpty()&&!bm.isEmpty())p.tone={face:meshOf(fm),body:meshOf(bm),t:toneT};fm.delete();bm.delete()}if(p.sup&&!p.sup.isEmpty())p.supMesh=meshOf(p.sup);p.vol=p.man.volume();const bx=p.man.boundingBox();p.bbox=bx};
  parts.forEach(finish);if(fit)fit.forEach(finish);
  const clean=p=>{const q={...p};delete q.man;delete q.cs;delete q.sup;return q};
- const out={parts:parts.map(clean),fit:fit?fit.map(clean):null,warn,info:{bossCount:bosses.length,OW,OH,D,zs,zl,R,T,u1,uo,face,onePiece:onePiece&&!segmented,pd,rW,rH,sightW:rW-2*lip,sightH:rH-2*lip,shopMark,barCount,keys:joints.length,hangGap,strips:stripCount,stripSize,mode:segmented?'locks':mode,clickZ:{zf,zb},buttons:pegs.length,backT,matT,art:c.art,path:pts,shape:c.shape,lip,artW:c.artW,artH:c.artH,zArt:zs+backT,mat:c.mat},cfg:c};
+ const out={parts:parts.map(clean),fit:fit?fit.map(clean):null,warn,info:{twoTone:tone,toneT,bossCount:bosses.length,OW,OH,D,zs,zl,R,T,u1,uo,face,onePiece:onePiece&&!segmented,pd,rW,rH,sightW:rW-2*lip,sightH:rH-2*lip,shopMark,barCount,keys:joints.length,hangGap,strips:stripCount,stripSize,mode:segmented?'locks':mode,clickZ:{zf,zb},buttons:pegs.length,backT,matT,art:c.art,path:pts,shape:c.shape,lip,artW:c.artW,artH:c.artH,zArt:zs+backT,mat:c.mat},cfg:c};
  bin.forEach(o=>{try{o.delete()}catch(e){}});
  return out;
 }
@@ -788,7 +798,7 @@ const SAFE=t=>String(t||'Part').replace(/[&+\/]/g,' and ').replace(/[^A-Za-z0-9 
 function setArr(txt,key,vals){const re=new RegExp('("'+key+'": \\[)([^\\]]*)(\\])');const m=txt.match(re);if(!m)return txt;const ind=(m[2].match(/\n(\s*)"/)||[,'        '])[1],end=(m[2].match(/\n(\s*)$/)||[,'    '])[1];return txt.replace(re,m[1]+'\n'+vals.map(v=>ind+JSON.stringify(v)).join(',\n')+'\n'+end+m[3])}
 function buildBambu(plates,bed,fflate,meta){const enc=new TextEncoder(),B64=b=>Uint8Array.from(atob(b),c=>c.charCodeAt(0));
  const W=bed.w,D=bed.d,N=plates.length,cols=Math.max(1,Math.ceil(Math.sqrt(N)-1e-9)),sx=W*1.2,sy=D*1.2;
- const colors=[];plates.forEach(pl=>pl.items.forEach(it=>{const c=(meta.colorOf(it.part)||'#808080').toUpperCase();if(!colors.includes(c))colors.push(c)}));
+ const colors=[],accOf=p=>p.tone&&meta.accentOf?(meta.accentOf(p)||'').toUpperCase():'';plates.forEach(pl=>pl.items.forEach(it=>{const a=accOf(it.part);if(a&&!colors.includes(a))colors.push(a);const c=(meta.colorOf(it.part)||'#808080').toUpperCase();if(!colors.includes(c))colors.push(c)}));
  const slotOf=c=>Math.min(5,colors.indexOf(c.toUpperCase())+1);
  const NF=JSON.parse(BBL.cfg).filament_colour,objs=[],items=[],ms=[],platesCfg=[];let n=0,iid=100;const u=(a,b)=>u32(a)+b;
  plates.forEach((pl,k)=>{const ox=(k%cols)*sx,oy=-Math.floor(k/cols)*sy,inst=[];
@@ -798,7 +808,7 @@ function buildBambu(plates,bed,fflate,meta){const enc=new TextEncoder(),B64=b=>U
    objs.push(`  <object id="${wid}" p:UUID="${u(wid,'-61cb-4c03-9d28-80fed5dfa1dc')}" type="model">\n   <components>\n    <component p:path="" objectid="${mid}" p:UUID="${u(mid,'-b206-40ff-9872-83e8017abed1').replace(/^(.{4})/,'0001')}" transform="1 0 0 0 1 0 0 0 1 0 0 0"/>\n   </components>\n  </object>`.replace(' p:path=""',''));
    const t=it.th*Math.PI/180,c=Math.cos(t),s=Math.sin(t);
    items.push(`  <item objectid="${wid}" p:UUID="${u(wid,'-b1ec-4553-aec9-835e5b724bb4')}" transform="${f(c)} ${f(s)} 0 ${f(-s)} ${f(c)} 0 0 0 1 ${f(ox+it.x)} ${f(oy+it.y)} ${f(q.z/2)}" printable="1"/>`);
-   const nm=SAFE(p.name||p.kind),slot=slotOf(meta.colorOf(p)||'#808080');
+   const nm=SAFE(p.name||p.kind),slot=accOf(p)?slotOf(accOf(p)):slotOf(meta.colorOf(p)||'#808080');
    ms.push(`  <object id="${wid}">\n    <metadata key="name" value="${nm}"/>\n    <metadata key="extruder" value="${slot}"/>\n    <part id="${mid}" subtype="normal_part">\n      <metadata key="name" value="${nm}"/>\n      <metadata key="matrix" value="1 0 0 0 0 1 0 0 0 0 1 0 0 0 0 1"/>\n      <metadata key="source_file" value=""/>\n    </part>\n  </object>`.replace('\n      <metadata key="source_file" value=""/>',''));
    inst.push(`    <model_instance>\n      <metadata key="object_id" value="${wid}"/>\n      <metadata key="instance_id" value="0"/>\n      <metadata key="identify_id" value="${iid++}"/>\n    </model_instance>`)});
   const P=k+1;platesCfg.push(`  <plate>\n    <metadata key="plater_id" value="${P}"/>\n    <metadata key="plater_name" value="${SAFE(pl.name)}"/>\n    <metadata key="locked" value="false"/>\n    <metadata key="filament_map_mode" value="Auto For Flush"/>\n    <metadata key="filament_maps" value="${NF.map(()=>1).join(' ')}"/>\n    <metadata key="filament_volume_maps" value="${NF.map(()=>0).join(' ')}"/>\n    <metadata key="thumbnail_file" value="Metadata/plate_${P}.png"/>\n    <metadata key="thumbnail_no_light_file" value="Metadata/plate_no_light_${P}.png"/>\n    <metadata key="top_file" value="Metadata/top_${P}.png"/>\n    <metadata key="pick_file" value="Metadata/pick_${P}.png"/>\n${inst.join('\n')}\n  </plate>`)});
@@ -809,7 +819,11 @@ function buildBambu(plates,bed,fflate,meta){const enc=new TextEncoder(),B64=b=>U
  if(W!==256||D!==256){cfg=setArr(cfg,'printable_area',['0x0',`${W}x0`,`${W}x${D}`,`0x${D}`]);cfg=setArr(cfg,'wipe_tower_x',[String(Math.min(165,Math.max(10,W-45)))]);cfg=setArr(cfg,'wipe_tower_y',[String(Math.min(218.573,Math.max(10,D-45)))]);
   const ds=JSON.parse(BBL.cfg).different_settings_to_system.slice(),add=(i,k)=>{const a=ds[i]?ds[i].split(';').filter(Boolean):[];if(!a.includes(k))a.push(k);ds[i]=a.sort().join(';')};add(ds.length-1,'printable_area');if(W-45<165||D-45<218.573){add(0,'wipe_tower_x');add(0,'wipe_tower_y')}cfg=setArr(cfg,'different_settings_to_system',ds)}
  const seq={};plates.forEach((_,k)=>seq['plate_'+(k+1)]={nozzle_sequence:[],optimal_assignment:[],sequence:[]});
+ /* two-tone plates: start in the face color, then switch to the frame color once the front skin is done */
+ const cg=[];plates.forEach((pl,k)=>{const its=pl.items;if(!its.length||!its.every(it=>accOf(it.part)))return;const t=its[0].part.tone.t,body=(meta.colorOf(its[0].part)||'#808080').toUpperCase(),z=(.2+Math.ceil((t-.2)/.16-1e-6)*.16+.16).toFixed(2);
+  if(accOf(its[0].part)===body)return;cg.push(`<plate>\n<plate_info id="${k+1}"/>\n<layer top_z="${z}" type="2" extruder="${slotOf(body)}" color="${body}" extra="" gcode="tool_change"/>\n<mode value="MultiAsSingle"/>\n</plate>`)});
  const L={level:6},files={'[Content_Types].xml':[enc.encode(BBL.ct),L],'_rels/.rels':[enc.encode(BBL.rels),L],'3D/3dmodel.model':[enc.encode(model),L],'Metadata/model_settings.config':[enc.encode(msc),L],'Metadata/project_settings.config':[enc.encode(cfg),L],'Metadata/slice_info.config':[enc.encode(BBL.slice),L],'Metadata/filament_sequence.json':[enc.encode(JSON.stringify(seq)),L],'Metadata/plate_1_small.png':[B64(BBL.small),{level:0}]};
+ if(cg.length)files['Metadata/custom_gcode_per_layer.xml']=[enc.encode(`<?xml version="1.0" encoding="utf-8"?>\n<custom_gcodes_per_layer>\n${cg.join('\n')}\n</custom_gcodes_per_layer>\n`),L];
  const png=B64(BBL.png);plates.forEach((_,k)=>{const P=k+1;['plate_','plate_no_light_','top_','pick_'].forEach(pre=>files[`Metadata/${pre}${P}.png`]=[png,{level:0}])});
  return fflate.zipSync(files)}
 function stl(p){const q=p.pm||(p.pm=printed(p)),nt=q.t.length/3,buf=new ArrayBuffer(84+50*nt),dv=new DataView(buf);dv.setUint32(80,nt,true);let o=84;const v=q.v,t=q.t;
@@ -946,7 +960,7 @@ function softShape(shape,w,h,N,opt){const rmin=opt.rmin||28,hw=w/2,hh=h/2,M0=120
  return{pts:P,poly:false,soft:true}}
 const sub=(a,b)=>[a[0]-b[0],a[1]-b[1]],len=a=>Math.hypot(a[0],a[1]),nrm=a=>{const l=len(a)||1;return[a[0]/l,a[1]/l]},dot=(a,b)=>a[0]*b[0]+a[1]*b[1];
 
-function defaults(){return{shape:'rect',artW:203.2,artH:254,art:1.0,glass:false,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'smooth',grain:'along',faceText:'',mat:0,backer:true,hang:'top',stand:'none',backStyle:'eco',bedW:256,bedD:256,fit:.1,backText:'',skirt:3,shapeSeed:1,waveStyle:'classic',waveAmt:.5,cornerR:0,printer:'P1S',colors:{frame:'#23282B',mat:'#F4F4F0',backer:'#23282B'}}}
+function defaults(){return{shape:'rect',artW:203.2,artH:254,art:1.0,glass:false,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'smooth',grain:'along',faceText:'',mat:0,backer:true,hang:'top',stand:'none',backStyle:'eco',bedW:256,bedD:256,fit:.1,backText:'',skirt:3,twoTone:false,shapeSeed:1,waveStyle:'classic',waveAmt:.5,cornerR:0,printer:'P1S',colors:{frame:'#23282B',mat:'#F4F4F0',backer:'#23282B'}}}
 
 function build(M,cfg){
  const c=Object.assign(defaults(),cfg),warn=[],bin=[];
@@ -970,7 +984,10 @@ function build(M,cfg){
  const pd=Math.min(3.8,Math.max(1.6,R+T-r*maxH-amp-1.4));
  const rW=c.artW+2*c.mat+.8,rH=c.artH+2*c.mat+.8;
  if(c.build!=='one'&&onePiece)warn.push('Curved shapes print as one piece.');
- const face=c.orient==='face'?true:c.orient==='edge'?false:(onePiece||(tex.a===0&&['flat','bevel'].includes(c.relief)));
+ /* two-tone: the front skin prints in a second filament, which needs the frame to print face down */
+ const toneOK=onePiece||(tex.a===0&&['flat','bevel','reverse'].includes(c.relief)),tone=!!c.twoTone&&toneOK,toneT=1;
+ if(c.twoTone&&!toneOK)warn.push('Two-tone needs a Smooth face with the Flat or Bevel edge, so the front can print face down. Switch to one of those to use it.');
+ const face=tone?true:c.orient==='face'?true:c.orient==='edge'?false:(onePiece||(tex.a===0&&['flat','bevel'].includes(c.relief)));
  if(onePiece&&!(c.relief==='flat'||c.relief==='bevel'||c.relief==='reverse'))warn.push('One-piece frames print face down, so curved reliefs will show layer steps. Flat or Bevel looks cleanest.');
  const curveN=tex.a&&!['rect','hex'].includes(c.shape)?Math.min(1800,Math.max(180,Math.round(2.6*(rW+rH+2*c.faceW)/(fineDetail?(c.draft?.55:.34):fineGrain?(c.draft?.8:.45):(c.draft?1:.7))))):undefined;
  const base=shapePath(c.shape,rW,rH,curveN,{CS:M.CrossSection,rmin:(c.faceW-c.lip)*1.35+2,seed:c.shapeSeed,style:c.waveStyle,amt:c.waveAmt});
@@ -1343,10 +1360,10 @@ function build(M,cfg){
   fit.push({id:'fitt',name:'Fit test button',kind:'button',color:'frame',man:btnM,print:rot.id});
  }
  /* extract meshes */
- const finish=p=>{p.mesh=meshOf(p.man);if(p.sup&&!p.sup.isEmpty())p.supMesh=meshOf(p.sup);p.vol=p.man.volume();const bx=p.man.boundingBox();p.bbox=bx};
+ const finish=p=>{p.mesh=meshOf(p.man);if(tone&&p.kind==='bar'&&p.print===rot.flip){const zt=p.man.boundingBox().max[2]-toneT,fm=p.man.trimByPlane([0,0,1],zt),bm=p.man.trimByPlane([0,0,-1],-zt);if(!fm.isEmpty()&&!bm.isEmpty())p.tone={face:meshOf(fm),body:meshOf(bm),t:toneT};fm.delete();bm.delete()}if(p.sup&&!p.sup.isEmpty())p.supMesh=meshOf(p.sup);p.vol=p.man.volume();const bx=p.man.boundingBox();p.bbox=bx};
  parts.forEach(finish);if(fit)fit.forEach(finish);
  const clean=p=>{const q={...p};delete q.man;delete q.cs;delete q.sup;return q};
- const out={parts:parts.map(clean),fit:fit?fit.map(clean):null,warn,info:{bossCount:bosses.length,OW,OH,D,zs,zl,R,T,u1,uo,face,onePiece:onePiece&&!segmented,pd,rW,rH,sightW:rW-2*lip,sightH:rH-2*lip,shopMark,barCount,keys:joints.length,hangGap,strips:stripCount,stripSize,mode:segmented?'locks':mode,clickZ:{zf,zb},buttons:pegs.length,backT,matT,art:c.art,path:pts,shape:c.shape,lip,artW:c.artW,artH:c.artH,zArt:zs+backT,mat:c.mat},cfg:c};
+ const out={parts:parts.map(clean),fit:fit?fit.map(clean):null,warn,info:{twoTone:tone,toneT,bossCount:bosses.length,OW,OH,D,zs,zl,R,T,u1,uo,face,onePiece:onePiece&&!segmented,pd,rW,rH,sightW:rW-2*lip,sightH:rH-2*lip,shopMark,barCount,keys:joints.length,hangGap,strips:stripCount,stripSize,mode:segmented?'locks':mode,clickZ:{zf,zb},buttons:pegs.length,backT,matT,art:c.art,path:pts,shape:c.shape,lip,artW:c.artW,artH:c.artH,zArt:zs+backT,mat:c.mat},cfg:c};
  bin.forEach(o=>{try{o.delete()}catch(e){}});
  return out;
 }
@@ -1364,6 +1381,9 @@ const SWATCH=[['Black','#1E1E20'],['White','#F4F4F0'],['Gray','#9C9C98'],['Oak',
 const TIP_URL='https://www.buymeacoffee.com/boroughbolt';
 /* Release notes: add a new entry at the top for every update. The newest one shows once to each visitor. */
 const RELEASES=[
+ {v:'1.8',date:'November 2026',title:"What's new in Clicky Frames",
+  added:['Share your design. Tap Share at the top to send a link. Whoever opens it gets your exact frame, ready to tweak or download.','Print time and cost. See about how long your frame takes to print, plate by plate, and what the filament costs. Set your price per kg under Printer.','Two-tone frames. Give the front of your frame its own color, like a gold face on a black frame. The files switch filament automatically after the front prints, so it just works with an AMS.'],
+  fixed:['The filament estimate is more accurate now. It counts the hollow infill inside each part instead of treating every part as solid plastic.']},
  {v:'1.7',date:'November 2026',title:"What's new in Clicky Frames",
   added:['Undo, Redo and Reset all, at the top of the settings. Undo steps back through every change you made, Redo brings it back, and Reset all puts everything back to the start. Changed your mind about a reset? Just hit Undo. Ctrl or ⌘ + Z works too.'],
   fixed:[]},
@@ -1408,10 +1428,18 @@ const RELEASES=[
   fixed:['Oval and arch frames no longer get stuck showing a circle.','The preview no longer flickers or cuts off when you move the camera.','Joint holes no longer sag when bars print on their edge.','Turn buttons snap in one way and stay put, while still swiveling.']}];
 const APP_VERSION=RELEASES[0].v;
 const KEY='clicky-public-v3';
-const st={shape:'rect',wmm:203.2,hmm:254,unit:'in',art:1,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'walnut',grain:'along',grainDepth:'1',grainDetail:'1',faceText:'',cover:'none',shapeSeed:1,waveStyle:'classic',waveAmt:'0.5',cornerR:'0',hang:'top',stand:'none',backStyle:'eco',bed:'256x256',bedW:256,bedD:256,backer:true,mat:0,backText:'',fit:'0.1',slug:'',ver:1,cFrame:'#7A5230',cBacker:'#7A5230',cMat:'#F4F4F0'};
+const st={shape:'rect',wmm:203.2,hmm:254,unit:'in',art:1,build:'click',orient:'auto',faceW:25,depth:18,lip:5,relief:'flat',reliefDepth:2,texture:'walnut',grain:'along',grainDepth:'1',grainDetail:'1',faceText:'',twoTone:false,cAccent:'#C9A227',filCost:'20',cover:'none',shapeSeed:1,waveStyle:'classic',waveAmt:'0.5',cornerR:'0',hang:'top',stand:'none',backStyle:'eco',bed:'256x256',bedW:256,bedD:256,backer:true,mat:0,backText:'',fit:'0.1',slug:'',ver:1,cFrame:'#7A5230',cBacker:'#7A5230',cMat:'#F4F4F0'};
 const DEFAULTS=JSON.stringify(st);
 const H={past:[],future:[],cur:null,t:0};
 try{Object.assign(st,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
+/* share links: the design rides in the link after #d= (only settings that differ from the start) */
+const SITE_URL='https://clicky.boroughandbolt.com/';
+const b64e=o=>{const b=new TextEncoder().encode(JSON.stringify(o));let x='';b.forEach(c=>x+=String.fromCharCode(c));return btoa(x).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')};
+const b64d=t=>{t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';const x=atob(t),b=new Uint8Array(x.length);for(let i=0;i<x.length;i++)b[i]=x.charCodeAt(i);return JSON.parse(new TextDecoder().decode(b))};
+let sharedLoaded=false;try{const m=(location.hash||'').match(/[#&]d=([A-Za-z0-9_-]+)/);if(m){const d=b64d(m[1]),D=JSON.parse(DEFAULTS);if(d&&typeof d==='object'){Object.keys(st).forEach(k=>{if(!['slug','ver'].includes(k))st[k]=D[k]});Object.keys(d).forEach(k=>{if(k in D&&!['slug','ver'].includes(k))st[k]=d[k]});sharedLoaded=true}
+ try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}}catch(e){}
+function shareLink(){const D=JSON.parse(DEFAULTS),d={};Object.keys(st).forEach(k=>{if(['slug','ver'].includes(k))return;if(JSON.stringify(st[k])!==JSON.stringify(D[k]))d[k]=st[k]});return SITE_URL+(Object.keys(d).length?'#d='+b64e(d):'')}
+let toastT=0;function toast(msg){const t=document.getElementById('toast');if(!t)return;t.textContent=msg;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2600)}
 if(st.texture==='wood')st.texture='oak';if(!FrameEngine.TEXTURES[st.texture])st.texture='smooth';
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}};
 const fmt=mm=>st.unit==='in'?+(mm/IN).toFixed(2):+mm.toFixed(1);
@@ -1441,6 +1469,11 @@ function drawThumbs(){try{const W=Math.max(14,+st.faceW||25),D=Math.max(.5,+st.r
 function queueThumbs(){clearTimeout(thumbT);thumbT=setTimeout(drawThumbs,220)}
 const rndSeed=()=>2+Math.floor(Math.random()*99990);
 $('cover').addEventListener('change',()=>{const t=+st.cover||0;if(t>0){st.art=+(t+.4).toFixed(1);$('art').value=st.art}plexCard();go()});
+chips($('accentSwatches'),[['Gold','#C9A227'],['Silver','#B8BCC2'],['Copper','#B0643A'],['White','#F4F4F0'],['Black','#1E1E20'],['Red','#9B3B2E']].map(x=>({k:x[1],label:x[0]})),l=>{st.cAccent=l.k;sync();go()});
+$('shareBtn').onclick=async()=>{const url=shareLink();
+ if(navigator.share&&/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){try{await navigator.share({title:'My Clicky Frames design',text:'Check out this frame I designed:',url});return}catch(e){if(e&&e.name==='AbortError')return}}
+ try{await navigator.clipboard.writeText(url);toast('Link copied. Anyone who opens it gets this exact frame.')}catch(e){window.prompt('Copy this link to share your design:',url)}};
+if(sharedLoaded)setTimeout(()=>toast('Loaded a shared design. Make it yours!'),900);
 $('undoBtn').onclick=undo;$('redoBtn').onclick=redo;$('resetBtn').onclick=resetAll;
 document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;const k=e.key.toLowerCase();const tg=e.target;if(tg&&(tg.tagName==='TEXTAREA'||(tg.tagName==='INPUT'&&/^(text|search|email)$/.test(tg.type))))return;
  if(k==='z'&&!e.shiftKey){e.preventDefault();undo()}else if((k==='z'&&e.shiftKey)||k==='y'){e.preventDefault();redo()}});
@@ -1481,14 +1514,14 @@ function sync(){plexCard();{const show=(id,on)=>{const e=$(id);e.hidden=!on;e.st
  $('waveAmtL').textContent=wv?'Wave depth':'Curviness';$('waveNote').textContent=wv?'Deeper waves come out wider, so the frame can follow every curve.':'Low is a soft pebble, high is a bold blob.';
  $('waveAmt').value=st.waveAmt;$('waveAmtV').textContent=Math.round(+st.waveAmt*100)+'%';
  show('roundBox',rd);const cm=cornerMax();$('cornerR').max=cm;if(+st.cornerR>cm)st.cornerR=String(cm);$('cornerR').value=st.cornerR;$('cornerRV').textContent=+st.cornerR?(st.unit==='in'?(+st.cornerR/25.4).toFixed(2)+' in':st.cornerR+' mm'):'Square'}{const cv=['circle','oval','arch','wavy','blob','heart'].includes(st.shape),o=$('build').options;o[0].textContent=cv?'Curved pieces join with locks':'Bars click into each other';o[1].textContent=cv?'Curved pieces join with locks':'Bars with corner locks';o[0].hidden=cv}$('w').value=fmt(st.wmm);$('h').value=fmt(st.hmm);document.querySelectorAll('.unit').forEach(e=>e.textContent=st.unit);$('unit').textContent=st.unit==='in'?'Use mm':'Use inches';
- ['art','cover','build','orient','faceW','depth','lip','relief','reliefDepth','texture','grainDepth','grainDetail','faceText','backText','hang','stand','backStyle','bed','bedW','bedD','mat','fit','cFrame','cBacker','cMat'].forEach(k=>$(k).value=st[k]);$('backer').checked=st.backer;
+ ['art','cover','filCost','cAccent','build','orient','faceW','depth','lip','relief','reliefDepth','texture','grainDepth','grainDetail','faceText','backText','hang','stand','backStyle','bed','bedW','bedD','mat','fit','cFrame','cBacker','cMat'].forEach(k=>$(k).value=st[k]);$('backer').checked=st.backer;$('twoTone').checked=!!st.twoTone;$('accentBox').style.display=st.twoTone?'flex':'none';
  const pr=(el,f)=>[...el.children].forEach(b=>b.setAttribute('aria-pressed',f(b.dataset.k)));
  pr($('sizes'),k=>{const s=SIZES.find(x=>x[0]===k);return Math.abs(s[1]*IN-st.wmm)<.5&&Math.abs(s[2]*IN-st.hmm)<.5});
  pr($('shapes'),k=>k===st.shape);pr($('sizesEdge'),k=>{const e=EDGES.find(x=>x[0]===k);return e[1]===st.faceW&&e[2]===st.depth&&e[3]===st.lip});
- pr($('swatches'),k=>k===st.cFrame);pr($('reliefGrid'),k=>k===st.relief);pr($('textureGrid'),k=>k===st.texture);pr($('grainGrid'),k=>k===st.grain);$('grainBox').hidden=$('grainOpts').hidden=!FrameEngine.TEXTURES[st.texture].wood;$('reliefDepth').disabled=st.relief==='flat';
+ pr($('swatches'),k=>k===st.cFrame);pr($('accentSwatches'),k=>k===st.cAccent);pr($('reliefGrid'),k=>k===st.relief);pr($('textureGrid'),k=>k===st.texture);pr($('grainGrid'),k=>k===st.grain);$('grainBox').hidden=$('grainOpts').hidden=!FrameEngine.TEXTURES[st.texture].wood;$('reliefDepth').disabled=st.relief==='flat';
  $('sSize').textContent=`${fmt(st.wmm)} × ${fmt(st.hmm)} ${st.unit}`;$('sShape').textContent=SHAPES.find(s=>s[0]===st.shape)[1];$('sEdge').textContent=`${st.faceW} × ${st.depth} mm · ${FrameEngine.RELIEFS[st.relief].n}`;$('sFace').textContent=FrameEngine.TEXTURES[st.texture].n+(FrameEngine.TEXTURES[st.texture].wood?' · '+FrameEngine.GRAINS[st.grain].toLowerCase():'');
  $('sBack').textContent=[st.hang==='none'?'':st.hang==='strips'?'Command strips':'Keyhole',st.stand==='none'?'':'Stand',st.backer?'Backer':'',st.mat>0?'Mat':''].filter(Boolean).join(' · ')||'None';$('sFit').textContent=`${st.bedW} × ${st.bedD} mm bed`;$('bedCustom').hidden=st.bed!=='custom'}
-const cfg=draft=>({shape:st.shape,artW:st.wmm,artH:st.hmm,art:+st.art,build:st.build,orient:st.orient,faceW:+st.faceW,depth:+st.depth,lip:+st.lip,relief:st.relief,reliefDepth:+st.reliefDepth,texture:st.texture,grain:st.grain,grainDepth:+st.grainDepth,grainDetail:+st.grainDetail,faceText:st.faceText,shapeSeed:+st.shapeSeed||1,waveStyle:st.waveStyle,waveAmt:+st.waveAmt,cornerR:+st.cornerR,hang:st.hang,stand:st.stand,backStyle:st.backStyle,bedW:+st.bedW||256,bedD:+st.bedD||256,backer:st.backer,mat:+st.mat,backText:st.backText,fit:+st.fit,colors:{frame:st.cFrame,mat:st.cMat,backer:st.cBacker},draft});
+const cfg=draft=>({shape:st.shape,artW:st.wmm,artH:st.hmm,art:+st.art,build:st.build,orient:st.orient,faceW:+st.faceW,depth:+st.depth,lip:+st.lip,relief:st.relief,reliefDepth:+st.reliefDepth,texture:st.texture,grain:st.grain,grainDepth:+st.grainDepth,grainDetail:+st.grainDetail,faceText:st.faceText,shapeSeed:+st.shapeSeed||1,waveStyle:st.waveStyle,waveAmt:+st.waveAmt,cornerR:+st.cornerR,hang:st.hang,stand:st.stand,backStyle:st.backStyle,bedW:+st.bedW||256,bedD:+st.bedD||256,backer:st.backer,mat:+st.mat,backText:st.backText,fit:+st.fit,colors:{frame:st.cFrame,mat:st.cMat,backer:st.cBacker,accent:st.cAccent},twoTone:!!st.twoTone,draft});
 const BED=()=>({w:+st.bedW||256,d:+st.bedD||256});
 $('form').addEventListener('submit',e=>e.preventDefault());
 $('form').addEventListener('input',e=>{const t=e.target;if(t.id==='img')return;if(t.id==='w'){const v=+t.value;if(v>0)st.wmm=st.unit==='in'?v*IN:v}else if(t.id==='h'){const v=+t.value;if(v>0)st.hmm=st.unit==='in'?v*IN:v}else if(t.id==='bed'){st.bed=t.value;if(t.value!=='custom'){const[w,d]=t.value.split('x');st.bedW=w;st.bedD=d}}else if(t.type==='checkbox')st[t.id]=t.checked;else if(t.id in st)st[t.id]=t.value;
@@ -1542,6 +1575,8 @@ const lb=$('lightBtn');lb.onclick=()=>{darkLit=!darkLit;lb.setAttribute('aria-pr
 function lightBtnState(){const d=isDark(st.cFrame)||(st.backer&&isDark(st.cBacker));lb.hidden=!d;if(!d&&darkLit){darkLit=false;lb.setAttribute('aria-pressed',false);lb.textContent='Turn on light'}}
 function scenePart(p,R,ex,noAsm){const barLike=p.kind==='bar';if(p.kind==='backer'){const m=new THREE.Mesh(geo(p.mesh,0),matl(showCol(colOf(R,p.color)),{roughness:.62}));if(ex)m.position.add(ex);m.userData.kind=p.kind;return m}
  if(barLike&&p.faceInfo&&R.cfg.texture!=='smooth'){const col=showCol(colOf(R,p.color)),plain=matl(col,{roughness:detail?.44:.62}),fm=matl(col,{roughness:.78}),mesh=new THREE.Mesh(faceMesh(p,R),[fm,plain]);const run=mapRun,apply=()=>{if(run!==mapRun)return;const q=faceMap(p,R);fm.map=q.a;fm.normalMap=q.n;fm.normalScale=new THREE.Vector2(1,1);fm.needsUpdate=true};if(SYNCMAP)apply();else setTimeout(apply,30);if(ex)mesh.position.add(ex);mesh.userData.kind=p.kind;return mesh}
+ if(barLike&&p.tone&&R.cfg.twoTone){const g=new THREE.Group(),o={roughness:detail?.44:.62,vertexColors:!!detail};g.add(new THREE.Mesh(geo(p.tone.body,R.info.zl+.05),matl(showCol(colOf(R,p.color)),o)));g.add(new THREE.Mesh(geo(p.tone.face,R.info.zl+.05),matl(showCol(colOf(R,'accent')),o)));
+  if(p.asm&&!noAsm){g.applyMatrix4(new THREE.Matrix4().fromArray(p.asm))}if(ex)g.position.add(ex);g.userData.kind=p.kind;return g}
  const m=new THREE.Mesh(geo(p.mesh,barLike?R.info.zl+.05:0),matl(showCol(colOf(R,p.color)),{roughness:detail?.44:.62,vertexColors:!!(barLike&&detail)}));if(p.asm&&!noAsm){const M=new THREE.Matrix4().fromArray(p.asm);m.applyMatrix4(M)}if(ex){m.position.add(ex)}m.userData.kind=p.kind;return m}
 try{document.fonts&&document.fonts.load('700 76px Geist')}catch(e){}
 function logoPNG(){const H=96,cv=document.createElement('canvas'),g=cv.getContext('2d'),F='700 '+Math.round(H*.8)+'px Geist,system-ui,sans-serif',LS=(-H*.8*.03).toFixed(1)+'px',set=()=>{g.font=F;if('letterSpacing' in g)g.letterSpacing=LS};set();const w1=g.measureText('Clicky ').width,w2=g.measureText('Frames').width,mk=H,gap=H*.36;cv.width=Math.ceil(mk+gap+w1+w2+4);cv.height=H;set();g.textBaseline='middle';
@@ -1564,13 +1599,20 @@ function aim(R,v){const i=R.info,s=Math.max(i.OW,i.OH);ctl.target.set(0,0,0);
  else{cam.up.set(0,1,0);const d=s*(v==='parts'?3.9:3.0);const dir=v==='back'?new THREE.Vector3(.42,.3,-1):v==='parts'?new THREE.Vector3(.75,.5,-1):new THREE.Vector3(-.42,.3,1);cam.position.copy(dir.normalize().multiplyScalar(d))}
  cam.near=2;cam.far=9000;cam.updateProjectionMatrix();ctl.update()}
 function setView(v){const changed=v!==mode;mode=v;[...$('views').children].forEach(b=>b.setAttribute('aria-pressed',b.dataset.k===v));$('plnav').hidden=v!=='plates';if(RES){draw(RES);aim(RES,v);label()}}
-function label(){const n=PL.length,k=Math.min(plate,n-1),nm=n?PL[k].name.replace(/\s+\d+$/,''):'';$('plLabel').textContent=n?`Plate ${k+1} of ${n} · ${nm} · ${Math.round(BED().w)}×${Math.round(BED().d)} mm`:''}
+function label(){const n=PL.length,k=Math.min(plate,n-1),nm=n?PL[k].name.replace(/\s+\d+$/,''):'';$('plLabel').textContent=n?`Plate ${k+1} of ${n} · ${nm} · ${Math.round(BED().w)}×${Math.round(BED().d)} mm · about ${fmtDur(plateEst(PL[k]))}`:''}
 $('plPrev').onclick=()=>{plate=(plate+PL.length-1)%PL.length;draw(RES);label()};$('plNext').onclick=()=>{plate=(plate+1)%PL.length;draw(RES);label()};
 function resize(){const r=view.getBoundingClientRect();if(r.width<2||r.height<2)return;renderer.setSize(r.width,r.height,false);cam.aspect=r.width/r.height;cam.updateProjectionMatrix()}
 new ResizeObserver(resize).observe(view);(function loop(){requestAnimationFrame(loop);ctl.update();const dist=cam.position.distanceTo(SPH.c),nr=Math.max(1,dist-SPH.r*1.3),fr=dist+SPH.r*1.3+50;if(Math.abs(cam.near-nr)>.5||Math.abs(cam.far-fr)>5){cam.near=nr;cam.far=fr;cam.updateProjectionMatrix()}renderer.render(scene,cam)})();
 let first=true,lastBox='';
+/* print time and filament estimate, calibrated against a slicer at the 0.16 mm template settings */
+function partEst(p){if(p._est)return p._est;const q=p.pm||(p.pm=FrameExport.printed(p)),v=q.v,t=q.t;let A=0,z0=1e9,z1=-1e9;
+ for(let i=0;i<t.length;i+=3){const a=t[i]*3,b=t[i+1]*3,c=t[i+2]*3,ux=v[b]-v[a],uy=v[b+1]-v[a+1],uz=v[b+2]-v[a+2],wx=v[c]-v[a],wy=v[c+1]-v[a+1],wz=v[c+2]-v[a+2];A+=Math.hypot(uy*wz-uz*wy,uz*wx-ux*wz,ux*wy-uy*wx)/2}
+ for(let i=2;i<v.length;i+=3){if(v[i]<z0)z0=v[i];if(v[i]>z1)z1=v[i]}const V=p.vol||0,H=z1-z0;
+ return p._est={s:Math.max(45,.0625*V+43.04*H+.1093*A-155.7),g:.000435*V+.000603*A}}
+function plateEst(pl){return pl.items.reduce((a,it)=>a+partEst(it.part).s,0)+360+(pl.items.some(it=>it.part.tone)?240:0)}
+const fmtDur=sec=>{const m=Math.max(1,Math.round(sec/300)*5),h=Math.floor(m/60),r=m%60;return h?`${h} h${r?' '+r+' m':''}`:`${r} m`};
 function render(R,ms){$('status').classList.remove('err');lightBtnState();PL=FrameExport.plateSets(R,BED()).prod;if(plate>=PL.length)plate=0;draw(R);const box=Math.round(Math.max(R.info.OW,R.info.OH)/8);if(first||box!==lastBox){aim(R,mode);first=false;lastBox=box}label();
- const i=R.info,vol=R.parts.reduce((a,p)=>a+p.vol,0),grams=vol*1.24/1000;const f=[['Outside',`${(i.OW/IN).toFixed(1)} × ${(i.OH/IN).toFixed(1)} in`],['Opening',`${(i.sightW/IN).toFixed(1)} × ${(i.sightH/IN).toFixed(1)} in`,'opt'],['Pieces',R.parts.length,'optm'],['Plates',PL.length],['Filament',`${Math.round(grams)} g`],['Prints',i.face?'Face down':'On edge','opt']];
+ const i=R.info,grams=R.parts.reduce((a,p)=>a+partEst(p).g,0),secs=PL.reduce((a,pl)=>a+plateEst(pl),0),cost=grams/1000*(+st.filCost||0);const f=[['Outside',`${(i.OW/IN).toFixed(1)} × ${(i.OH/IN).toFixed(1)} in`],['Opening',`${(i.sightW/IN).toFixed(1)} × ${(i.sightH/IN).toFixed(1)} in`,'opt'],['Pieces',R.parts.length,'optm'],['Plates',PL.length],['Filament',`${Math.round(grams)} g${cost>0?' · $'+cost.toFixed(2):''}`],['Print time',`about ${fmtDur(secs)}`],['Prints',i.face?'Face down':'On edge','opt']];
  $('facts').innerHTML=f.map(([a,b,c])=>`<div class="fact${c?' '+c:''}"><i>${a}</i><b>${b}</b></div>`).join('');showWarn(R.warn);$('status').textContent=i.onePiece?'One-piece frame':i.mode==='click'?`${i.barCount} bars that click together, ${i.buttons} turn buttons`:['rect','hex'].includes(i.shape)?`${i.barCount} bars, ${i.keys} corner locks, ${i.buttons} turn buttons`:`${i.barCount} curved pieces, ${i.keys} locks, ${i.buttons} turn buttons`;$('go').disabled=false}
 /* version badge and what's new */
 $('verNum').textContent=APP_VERSION;
@@ -1626,7 +1668,7 @@ function guide(R,ver,name){const {jsPDF}=window.jspdf,d=new jsPDF({unit:'pt',for
  const fx=MX+iw+24;let fy=top+6;const facts=[['Holds',sizeName],['Finished size',`${(i.OW/IN).toFixed(1)} × ${(i.OH/IN).toFixed(1)} in`],['Printer bed',`${Math.round(B.w)} × ${Math.round(B.d)} mm`],['Plates',`${plates.prod.length} plus 1 fit test`],['Pieces',String(R.parts.length)]];
  facts.forEach(f=>{d.setFont('helvetica','normal');d.setFontSize(9);d.setTextColor(MU);d.text(f[0],fx,fy+9);d.setFont('helvetica','bold');d.setFontSize(12);d.setTextColor(CH);d.text(f[1],fx,fy+25);fy+=30.5});
  y=top+ih+18;
- H('Print it');L(['Print the fit test first. If the corners are too tight or too loose, change "How tight the corners click" on the site and download again.','Open the 3MF in Bambu Studio and print every plate. Using another slicer? Use the STL files instead.',(R.parts.some(p=>p.supMesh)?'PLA works great. Leave supports off in the slicer. Thin snap-off ribs are built in at the corners. Pull them out with pliers before you put the frame together.':'PLA works great. No supports needed.')],false);y+=6;
+ H('Print it');L(['Print the fit test first. If the corners are too tight or too loose, change "How tight the corners click" on the site and download again.','Open the 3MF in Bambu Studio and print every plate. Using another slicer? Use the STL files instead.',...(R.parts.some(p=>p.tone)?['Two-tone: load the front color and the frame color. The 3MF prints the first 1 mm in the front color, then switches. In another slicer, add a filament change at 1 mm.']:[]),(R.parts.some(p=>p.supMesh)?'PLA works great. Leave supports off in the slicer. Thin snap-off ribs are built in at the corners. Pull them out with pliers before you put the frame together.':'PLA works great. No supports needed.')],false);y+=6;
  const steps=[];
  if(i.mode==='click'&&R.parts.some(p=>p.supMesh))steps.push('Pull out the thin printed ribs at the corner slots and tongues with pliers so nothing blocks the click.');
  if(i.mode==='click')steps.push('Lay the slot bars face down, an opening width apart. Slide a tongue bar straight down into both pockets and press each end until it clicks. Repeat with the other tongue bar.');
@@ -1663,7 +1705,7 @@ function guide(R,ver,name){const {jsPDF}=window.jspdf,d=new jsPDF({unit:'pt',for
 $('go').onclick=async()=>{const b=$('go');b.disabled=true;const old=b.textContent;const stat=t=>{$('status').textContent=t;return new Promise(r=>setTimeout(r,30))};
  try{await stat('Building full-detail files…');const R=await fullBuild();const name=slug(R);const files={};const enc=(u)=>[u,{level:0}],B=BED(),bt=`${B.w===B.d?B.w:B.w+'x'+B.d}mm-bed`;
   await stat('Writing the 3MF files…');const sets=FrameExport.plateSets(R,B),slug2=t=>t.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
-  const bm={colorOf:p=>colOf(R,p.color),version:APP_VERSION};
+  const bm={colorOf:p=>colOf(R,p.color),accentOf:p=>p.tone?colOf(R,'accent'):null,version:APP_VERSION};
   if(sets.prod.length)files[`${name}_${bt}.3mf`]=enc(FrameExport.buildBambu(sets.prod,B,fflate,{...bm,title:name}));
   if(sets.test.length)files[`${name}_${bt}_fit-test.3mf`]=enc(FrameExport.buildBambu(sets.test,B,fflate,{...bm,title:name+' fit test'}));
   await stat('Writing STL files…');const done={};R.parts.concat(R.fit||[]).forEach(p=>{const n=p.kind==='button'?'turn-button':p.id.replace(/\d+$/,x=>'-'+x);if(p.kind==='button'&&done.b)return;if(p.kind==='button')done.b=1;files[`STLs/${n}.stl`]=[FrameExport.stl(p),{level:4}]});
